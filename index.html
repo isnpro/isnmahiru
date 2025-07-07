@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Store Ndyy</title>
+    <!-- Tambahkan Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* Efek Hujan */
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .drop {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, rgba(138, 43, 226, 0.6), rgba(75, 0, 130, 0.6));
+            border-radius: 0 0 5px 5px;
+            animation: rain linear infinite;
+        }
+        
+        @keyframes rain {
+            0% {
+                transform: translateY(-100px);
+            }
+            100% {
+                transform: translateY(calc(100vh + 100px));
+            }
+        }
+        
+        .navbar-container {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #1a001a;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        
+        .navbar {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #fff;
+            border-right: 1px solid #4b0082;
+            background-color: #2d0a47;
+            position: relative;
+        }
+        
+        .navbar:last-child {
+            border-right: none;
+        }
+        
+        .navbar:hover {
+            background-color: #4b0082;
+        }
+        
+        .content {
+            padding: 20px;
+            padding-bottom: 60px;
+            text-align: center;
+        }
+        
+        .product-container {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        .product {
+            border: 1px solid #4b0082;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #1a001a;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #fff;
+        }
+        
+        .product h3 {
+            margin-top: 0;
+            color: #b19cd9;
+        }
+        
+        .product p {
+            color: #d8bfd8;
+        }
+        
+        .price {
+            font-weight: bold;
+            color: #ffa500;
+            font-size: 18px;
+        }
+        
+        .active {
+            background-color: #8a2be2 !important;
+            color: white;
+        }
+        
+        .price-btn {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .price-btn:hover {
+            background-color: #9932cc;
+        }
+        
+        .price-btn i {
+            transition: transform 0.3s;
+        }
+        
+        .price-btn.active i {
+            transform: rotate(180deg);
+        }
+        
+        .price-list {
+            display: none;
+            margin-top: 10px;
+            text-align: left;
+            border-top: 1px solid #4b0082;
+            padding-top: 10px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+        
+        .price-list ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+        }
+        
+        .price-list li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #4b0082;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+        }
+        
+        .price-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .buy-btn {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .buy-btn:hover {
+            background-color: #9932cc;
+        }
+        
+        /* Style untuk konten Owner */
+        .owner-content {
+            text-align: center;
+        }
+        
+        .owner-photo {
+            max-width: 80%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(138, 43, 226, 0.3);
+            border: 2px solid #8a2be2;
+        }
+        
+        .owner-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .owner-link {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .owner-link:hover {
+            filter: brightness(90%);
+        }
+        
+        /* Warna khusus untuk masing-masing tombol */
+        .wa-link {
+            background-color: #25D366;
+        }
+        
+        .channel-link {
+            background-color: #075E54;
+        }
+        
+        .group-link {
+            background-color: #128C7E;
+        }
+        
+        .testimoni-link {
+            background-color: #FFC107;
+            color: #333;
+        }
+        
+        .discord-link {
+            background-color: #7289DA;
+        }
+        
+        /* Style untuk konten Music */
+        .music-player {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #4b0082;
+            border-radius: 5px;
+            background-color: #1a001a;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .music-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #b19cd9;
+        }
+        
+        audio {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 10px;
+        }
+        
+        .play-btn {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .play-btn:hover {
+            background-color: #9932cc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Efek Hujan -->
+    <div class="rain" id="rain"></div>
+    
+    <div class="content">
+        <!-- Container untuk produk -->
+        <div id="produk-content" class="product-container">
+            <h2 class="section-title">Daftar Produk</h2>
+            
+            <div class="product">
+                <h3>Sheckles GaG</h3>
+                <p>Fruit dari game roblox yang bernama Grow A Garden, biasanya untuk di jual untuk menambahkan duit gag</p>
+                <button class="price-btn" onclick="togglePriceList('price-list-1', this)">
+                    <span>Lihat List Harga</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="price-list-1" class="price-list">
+                    <ul>
+                        <li>744T/649T: Rp 3.000 <button class="buy-btn" onclick="buyProduct('744T/649T', 'Rp 3.999')">Beli</button></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="product">
+                <h3>Pets GaG</h3>
+                <p>Hewan dari game roblox bernama Grow A Garden, biasanya berfungsi untuk x2 sesuai pet.</p>
+                <button class="price-btn" onclick="togglePriceList('price-list-2', this)">
+                    <span>Lihat List Harga</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="price-list-2" class="price-list">
+                    <ul>
+                        <li>Red Fox: Rp 10.000 <button class="buy-btn" onclick="buyProduct('Red Fox', 'Rp 10.000')">Beli</button></li>
+                        <li>Quen Bee: Rp 30.000 <button class="buy-btn" onclick="buyProduct('Quen Bee', 'Rp 30.000')">Beli</button></li>
+                        <li>Drgon fly: Rp 40.000 <button class="buy-btn" onclick="buyProduct('Drgon fly', 'Rp 40.000')">Beli</button></li>
+                        <li>Disco Bee: Rp 55.000 <button class="buy-btn" onclick="buyProduct('Disco Bee', 'Rp 55.000')">Beli</button></li>
+                        <li>Racoon: Rp 70.000 <button class="buy-btn" onclick="buyProduct('Racoon', 'Rp 70.000')">Beli</button></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="product">
+                <h3>Brainrot</h3>
+                <p>Brainrot game dari roblox, game ini sangat populer di kalangan remaja, anak².</p>
+                <button class="price-btn" onclick="togglePriceList('price-list-3', this)">
+                    <span>Lihat List Harga</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="price-list-3" class="price-list">
+                    <ul>
+                        <li>Cocofanto elefanto: Rp 500 <button class="buy-btn" onclick="buyProduct('Cocofanto elefanto', 'Rp 500')">Beli</button></li>
+                        <li>Girafa celete: Rp 1.000 <button class="buy-btn" onclick="buyProduct('Girafa celete', 'Rp 1.000')">Beli</button></li>
+                        <li>Gattatino nyanino: Rp 2.000 <button class="buy-btn" onclick="buyProduct('Gattatino nyanino', 'Rp 2.000')">Beli</button></li>
+                        <li>Tralelo tralala: Rp 2.000 <button class="buy-btn" onclick="buyProduct('Tralelo tralala', 'Rp 2.000')">Beli</button></li>
+                        <li>Udin din dun: Rp 3.000 <button class="buy-btn" onclick="buyProduct('Udin din dun', 'Rp 3.000')">Beli</button></li>
+                        <li>Matteo: Rp 5.000 <button class="buy-btn" onclick="buyProduct('Matteo', 'Rp 5.000')">Beli</button></li>
+                        <li>Uncle samito: Rp 6.000 <button class="buy-btn" onclick="buyProduct('Uncle samito', 'Rp 6.000')">Beli</button></li>
+                        <li>Turbo: Rp 8.000 <button class="buy-btn" onclick="buyProduct('Turbo', 'Rp 8.000')">Beli</button></li>
+                        <li>La Vacca Saturno Saturnita: Rp 10.000 <button class="buy-btn" onclick="buyProduct('La Vacca Saturno Saturnita', 'Rp 10.000')">Beli</button></li>
+                        <li>Los Tralalleritos: Rp 15.000 <button class="buy-btn" onclick="buyProduct('Los Tralalleritos', 'Rp 15.000')">Beli</button></li>
+                        <li>Sammyni spyderini: Rp 22.000 <button class="buy-btn" onclick="buyProduct('Sammyni spyderini', 'Rp 22.000')">Beli</button></li>
+                        <li>Graipus medusi: Rp 21.000 <button class="buy-btn" onclick="buyProduct('Graipus medusi', 'Rp 21.000')">Beli</button></li>
+                        <li>La grande: Rp 65.000 <button class="buy-btn" onclick="buyProduct('La grande', 'Rp 65.000')">Beli</button></li>
+                        <li>garamararaman & madungdung: Rp 100.000 <button class="buy-btn" onclick="buyProduct('garamararaman & madungdung', 'Rp 100.000')">Beli</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Container untuk owner -->
+        <div id="owner-content" class="product-container">
+            <h2 class="section-title">Owner</h2>
+            <div class="owner-content">
+                <img src="https://files.catbox.moe/4dnhsc.jpg" alt="Foto Owner" class="owner-photo">
+                <div class="owner-links">
+                    <a href="https://wa.me/6282122738265" class="owner-link wa-link" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Chat Owner
+                    </a>
+                    <a href="https://whatsapp.com/channel/0029Vb8jQnWL7UVTKDQpTV25" class="owner-link channel-link" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Channel WA
+                    </a>
+                    <a href="https://chat.whatsapp.com/BTjEj2IoHus4ouEsoOGxdl" class="owner-link group-link" target="_blank">
+                        <i class="fas fa-users"></i> Grup WA
+                    </a>
+                    <a href="https://discord.gg/skkwUrtBBV" class="owner-link discord-link" target="_blank">
+                        <i class="fab fa-discord"></i> Discord
+                    </a>
+                    <a href="https://whatsapp.com/channel/0029Vb8jQnWL7UVTKDQpTV25" class="owner-link testimoni-link" target="_blank">
+                        <i class="fas fa-star"></i> Testimoni
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Container untuk music -->
+        <div id="music-content" class="product-container">
+            <h2 class="section-title">Koleksi Music</h2>
+            
+            <div class="music-player">
+                <div class="music-title">Merah Jambu</div>
+                <audio controls id="merah-jambu">
+                    <source src="https://files.catbox.moe/kwr3u6.mp3" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+                <button class="play-btn" onclick="playPause('merah-jambu')">
+                    <i class="fas fa-play"></i> Putar/Jeda
+                </button>
+            </div>
+            
+            <div class="music-player">
+                <div class="music-title">Jadian Yuk</div>
+                <audio controls id="jadian-yuk">
+                    <source src="https://files.catbox.moe/h4b3fj.mp3" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+                <button class="play-btn" onclick="playPause('jadian-yuk')">
+                    <i class="fas fa-play"></i> Putar/Jeda
+                </button>
+            </div>
+            
+            <div class="music-player">
+                <div class="music-title">Mangu</div>
+                <audio controls id="mangu">
+                    <source src="https://files.catbox.moe/uihw75.mp3" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+                <button class="play-btn" onclick="playPause('mangu')">
+                    <i class="fas fa-play"></i> Putar/Jeda
+                </button>
+            </div>
+            
+            <div class="music-player">
+                <div class="music-title">Kasih Aba Aba</div>
+                <audio controls id="kasih-aba">
+                    <source src="https://files.catbox.moe/qxwsuh.mp3" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+                <button class="play-btn" onclick="playPause('kasih-aba')">
+                    <i class="fas fa-play"></i> Putar/Jeda
+                </button>
+            </div>
+            
+            <div class="music-player">
+                <div class="music-title">O, Tuan</div>
+                <audio controls id="o-tuan">
+                    <source src="https://files.catbox.moe/qnmmke.mp3" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+                <button class="play-btn" onclick="playPause('o-tuan')">
+                    <i class="fas fa-play"></i> Putar/Jeda
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navbar-container">
+        <div class="navbar" id="produk-nav" onclick="showContent('produk')">Produk</div>
+        <div class="navbar" id="owner-nav" onclick="showContent('owner')">Owner</div>
+        <div class="navbar" id="music-nav" onclick="showContent('music')">Music</div>
+    </div>
+    
+    <script>
+        function showContent(contentType) {
+            // Sembunyikan semua konten terlebih dahulu
+            document.getElementById('produk-content').style.display = 'none';
+            document.getElementById('owner-content').style.display = 'none';
+            document.getElementById('music-content').style.display = 'none';
+            
+            // Hapus class active dari semua navbar
+            document.getElementById('produk-nav').classList.remove('active');
+            document.getElementById('owner-nav').classList.remove('active');
+            document.getElementById('music-nav').classList.remove('active');
+            
+            // Tampilkan konten yang dipilih dan aktifkan navbar
+            document.getElementById(contentType + '-content').style.display = 'block';
+            document.getElementById(contentType + '-nav').classList.add('active');
+        }
+        
+        // Fungsi untuk menampilkan/sembunyikan list harga dengan animasi panah
+        function togglePriceList(id, button) {
+            const priceList = document.getElementById(id);
+            
+            // Toggle class active pada tombol
+            button.classList.toggle('active');
+            
+            if (priceList.style.display === 'block') {
+                priceList.style.display = 'none';
+            } else {
+                // Tutup semua price list lainnya sebelum membuka yang baru
+                document.querySelectorAll('.price-list').forEach(list => {
+                    if (list.id !== id) {
+                        list.style.display = 'none';
+                        const btn = list.previousElementSibling;
+                        if (btn && btn.classList.contains('price-btn')) {
+                            btn.classList.remove('active');
+                        }
+                    }
+                });
+                
+                priceList.style.display = 'block';
+            }
+        }
+        
+        // Fungsi untuk membuka WhatsApp dengan pesan pembelian
+        function buyProduct(productName, price) {
+            const phoneNumber = '6282122738265';
+            const message = `Bang jual ${productName} dengan harga ${price}, masih ada?`;
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Fungsi untuk membuat efek hujan
+        function createRain() {
+            const rainContainer = document.getElementById('rain');
+            const rainCount = 100;
+            
+            for (let i = 0; i < rainCount; i++) {
+                const drop = document.createElement('div');
+                drop.classList.add('drop');
+                
+                // Random posisi dan animasi
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+                drop.style.animationDelay = Math.random() + 's';
+                drop.style.height = (Math.random() * 20 + 10) + 'px';
+                drop.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                rainContainer.appendChild(drop);
+            }
+        }
+        
+        // Fungsi untuk memutar/menjeda musik
+        function playPause(audioId) {
+            const audio = document.getElementById(audioId);
+            const button = event.currentTarget;
+            
+            if (audio.paused) {
+                audio.play();
+                button.innerHTML = '<i class="fas fa-pause"></i> Jeda';
+                
+                // Jeda semua audio lainnya
+                document.querySelectorAll('audio').forEach(a => {
+                    if (a.id !== audioId && !a.paused) {
+                        a.pause();
+                        a.currentTime = 0;
+                        const btn = a.nextElementSibling;
+                        if (btn && btn.classList.contains('play-btn')) {
+                            btn.innerHTML = '<i class="fas fa-play"></i> Putar/Jeda';
+                        }
+                    }
+                });
+            } else {
+                audio.pause();
+                audio.currentTime = 0;
+                button.innerHTML = '<i class="fas fa-play"></i> Putar/Jeda';
+            }
+        }
+        
+        // Tampilkan produk secara default saat halaman dimuat
+        window.onload = function() {
+            showContent('produk');
+            createRain();
+            
+            // Update tombol play/pause saat audio selesai
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.addEventListener('ended', function() {
+                    const button = this.nextElementSibling;
+                    if (button && button.classList.contains('play-btn')) {
+                        button.innerHTML = '<i class="fas fa-play"></i> Putar/Jeda';
+                    }
+                });
+            });
+        };
+    </script>
+</body>
+</html>
